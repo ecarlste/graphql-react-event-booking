@@ -62,7 +62,7 @@ app.use('/graphql', graphqlHttp({
 }));
 
 mongoose.connect(
-    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-sosdu.gcp.mongodb.net/test?retryWrites=true`,
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-sosdu.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`,
     opt
 )
 .then(() => {
@@ -71,5 +71,3 @@ mongoose.connect(
 .catch(err => {
     console.log(err);
 });
-
-
