@@ -4,17 +4,21 @@ const Booking = require('../../models/booking');
 const Event = require('../../models/event');
 const User = require('../../models/user');
 
+const transformEvent = event => {
+    return {
+        ...event._doc,
+        _id: event.id,
+        date: new Date(event._doc.date).toISOString(),
+        creator: user.bind(this, event.creator)
+    }
+};
+
 const events = async eventIds => {
     try {
         const events = await Event.find({ _id: { $in: eventIds } });
 
         return events.map(event => {
-            return {
-                ...event._doc,
-                _id: event.id,
-                date: new Date(event._doc.date).toISOString(),
-                creator: user.bind(this, event.creator)
-            }
+            return transformEvent(event);
         });
     } catch (err) {
         throw err;
@@ -25,12 +29,8 @@ const singleEvent = async eventId => {
     try {
         const event = await Event.findById(eventId);
 
-        return {
-            ...event._doc,
-            _id: event.id,
-            creator: user.bind(this, event.creator)
-        }
-    } catch(err) {
+        return transformEvent(event);
+    } catch (err) {
         throw err;
     }
 }
@@ -55,12 +55,7 @@ const resolvers = {
             const events = await Event.find();
 
             return events.map(event => {
-                return {
-                    ...event._doc,
-                    _id: event.id,
-                    date: new Date(event._doc.date).toISOString(),
-                    creator: user.bind(this, event._doc.creator)
-                };
+                return transformEvent(event);
             })
         } catch (err) {
             throw err;
@@ -71,7 +66,7 @@ const resolvers = {
             const bookings = await Booking.find();
             return bookings.map(booking => {
                 return {
-                     ...booking._doc,
+                    ...booking._doc,
                     _id: booking.id,
                     user: user.bind(this, booking._doc.user),
                     event: singleEvent.bind(this, booking._doc.event),
@@ -79,7 +74,7 @@ const resolvers = {
                     updatedAt: new Date(booking._doc.updatedAt).toISOString()
                 }
             })
-        } catch(err) {
+        } catch (err) {
             throw err;
         }
     },
@@ -96,12 +91,7 @@ const resolvers = {
         try {
             const result = await event.save()
 
-            createdEvent = {
-                ...result._doc,
-                _id: result.id,
-                date: new Date(result._doc.date).toISOString(),
-                creator: user.bind(this, result._doc.creator)
-            };
+            createdEvent = transformEvent(result);
 
             const creator = await User.findById('5c724bb64a88a94db9f8b9ee');
 
@@ -143,7 +133,7 @@ const resolvers = {
         }
     },
     bookEvent: async args => {
-        const fetchedEvent = await Event.findOne({_id: args.eventId});
+        const fetchedEvent = await Event.findOne({ _id: args.eventId });
 
         const booking = new Booking({
             user: '5c724bb64a88a94db9f8b9ee',
@@ -161,19 +151,15 @@ const resolvers = {
     },
     cancelBooking: async args => {
         try {
-            const fetchedBooking = await Booking.findById({_id: args.bookingId})
+            const fetchedBooking = await Booking.findById({ _id: args.bookingId })
                 .populate('event');
 
-            const event = {
-                ...fetchedBooking.event._doc,
-                _id: fetchedBooking.event.id,
-                creator: user.bind(this, fetchedBooking.event._doc.creator)
-            }
+            const event = transformEvent(fetchedBooking.event);
 
-            await Booking.deleteOne({_id: args.bookingId});
+            await Booking.deleteOne({ _id: args.bookingId });
 
             return event;
-        } catch(err) {
+        } catch (err) {
             throw err;
         }
     }
