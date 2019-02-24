@@ -2,10 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const graphqlHttp = require('express-graphql');
 const { buildSchema } = require('graphql');
+const mongoose = require('mongoose');
 
 const app = express();
 
 const events = [];
+
+const opt = { useNewUrlParser: true };
 
 app.use(bodyParser.json());
 
@@ -58,4 +61,15 @@ app.use('/graphql', graphqlHttp({
     graphiql: true
 }));
 
-app.listen(process.env.NOVE_ENV || 3000);
+mongoose.connect(
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-sosdu.gcp.mongodb.net/test?retryWrites=true`,
+    opt
+)
+.then(() => {
+    app.listen(process.env.NOVE_ENV || 3000);
+})
+.catch(err => {
+    console.log(err);
+});
+
+
