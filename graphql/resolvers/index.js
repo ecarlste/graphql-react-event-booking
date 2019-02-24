@@ -158,6 +158,24 @@ const resolvers = {
             createdAt: new Date(booking._doc.createdAt).toISOString(),
             updatedAt: new Date(booking._doc.updatedAt).toISOString()
         }
+    },
+    cancelBooking: async args => {
+        try {
+            const fetchedBooking = await Booking.findById({_id: args.bookingId})
+                .populate('event');
+
+            const event = {
+                ...fetchedBooking.event._doc,
+                _id: fetchedBooking.event.id,
+                creator: user.bind(this, fetchedBooking.event._doc.creator)
+            }
+
+            await Booking.deleteOne({_id: args.bookingId});
+
+            return event;
+        } catch(err) {
+            throw err;
+        }
     }
 }
 
