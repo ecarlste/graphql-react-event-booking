@@ -62,7 +62,7 @@ const resolvers = {
 
         let createdEvent;
         try {
-            const newEvent = await event.save()
+            const result = await event.save()
 
             createdEvent = {
                 ...result._doc,
@@ -71,14 +71,14 @@ const resolvers = {
                 creator: user.bind(this, result._doc.creator)
             };
 
-            const user = await User.findById('5c724bb64a88a94db9f8b9ee');
+            const creator = await User.findById('5c724bb64a88a94db9f8b9ee');
 
-            if (!user) {
+            if (!creator) {
                 throw new Error('User not found.');
             }
-            user.createdEvents.push(event);
-            await user.save();
-            
+            creator.createdEvents.push(event);
+            await creator.save();
+
             return createdEvent
         } catch (err) {
             throw err;
