@@ -10,6 +10,7 @@ const events = eventIds => {
                 return {
                     ...event._doc,
                     _id: event.id,
+                    date: new Date(event._doc.date).toISOString(),
                     creator: user.bind(this, event.creator)
                 }
             })
@@ -41,6 +42,7 @@ const resolvers = {
                     return {
                         ...event._doc,
                         _id: event.id,
+                        date: new Date(event._doc.date).toISOString(),
                         creator: user.bind(this, event._doc.creator)
                     };
                 })
@@ -65,6 +67,7 @@ const resolvers = {
                 createdEvent = {
                     ...result._doc,
                     _id: result.id,
+                    date: new Date(result._doc.date).toISOString(),
                     creator: user.bind(this, result._doc.creator)
                 };
                 return User.findById('5c724bb64a88a94db9f8b9ee');
@@ -101,7 +104,11 @@ const resolvers = {
             })
             .then(result => {
                 console.log(result);
-                return { ...result._doc, password: null, _id: result.id };
+                return {
+                    ...result._doc,
+                    password: null,
+                    _id: result.id
+                };
             })
             .catch(err => {
                 console.log(err);
