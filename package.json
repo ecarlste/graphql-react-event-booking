@@ -15,5 +15,12 @@
   "bugs": {
     "url": "https://github.com/ecarlste/graphql-react-event-booking/issues"
   },
-  "homepage": "https://github.com/ecarlste/graphql-react-event-booking#readme"
+  "homepage": "https://github.com/ecarlste/graphql-react-event-booking#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.10"
+  }
 }
