@@ -16,6 +16,16 @@ const opt = { useNewUrlParser: true };
 
 app.use(bodyParser.json());
 
+const user = userId => {
+    return User.findById(userId)
+        .then(user => {
+            return { ...user._doc, _id: user.id };
+        })
+        .catch(err => {
+            throw err;
+        })
+};
+
 app.use('/graphql', graphqlHttp({
     schema: buildSchema(`
         type Event {
@@ -24,13 +34,14 @@ app.use('/graphql', graphqlHttp({
             description: String!
             price: Float!
             date: String!
+            creator: User!
         }
 
         type User {
             _id: ID!
             email: String!
             password: String
-            createdEvents: [Event!]!
+            createdEvents: [Event!]
         }
 
         input EventInput {
@@ -64,7 +75,11 @@ app.use('/graphql', graphqlHttp({
             return Event.find()
                 .then(events => {
                     return events.map(event => {
-                        return { ...event._doc, _id: event.id };
+                        return {
+                            ...event._doc,
+                            _id: event.id,
+                            creator: user.bind(this, event._doc.creator)
+                        };
                     })
                 }).catch(err => {
                     throw err;
@@ -94,14 +109,14 @@ app.use('/graphql', graphqlHttp({
                     user.createdEvents.push(event);
                     return user.save();
                 })
-                .then(() => {return createdEvent})
+                .then(() => { return createdEvent })
                 .catch(err => {
                     console.log(err);
                     throw err;
                 });
         },
         createUser: args => {
-            return User.findOne({email: args.userInput.email})
+            return User.findOne({ email: args.userInput.email })
                 .then(user => {
                     if (user) {
                         throw new Error('User already exists.');
@@ -126,19 +141,19 @@ app.use('/graphql', graphqlHttp({
                     throw err;
                 })
 
-            
+
         }
     },
     graphiql: true
 }));
 
 mongoose.connect(
-    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-sosdu.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`,
-    opt
-)
-.then(() => {
-    app.listen(process.env.NOVE_ENV || 3000);
-})
-.catch(err => {
-    console.log(err);
-});
+        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0-sosdu.gcp.mongodb.net/${process.env.MONGO_DB}?retryWrites=true`,
+        opt
+    )
+    .then(() => {
+        app.listen(process.env.NOVE_ENV || 3000);
+    })
+    .catch(err => {
+        console.log(err);
+    });
