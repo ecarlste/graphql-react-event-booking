@@ -33,7 +33,7 @@ const user = userId => {
         })
 };
 
-const rootValue = {
+const resolvers = {
     events: () => {
         return Event.find()
             .then(events => {
@@ -110,4 +110,4 @@ const rootValue = {
     }
 }
 
-module.exports = rootValue;
+module.exports = resolvers;
