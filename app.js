@@ -10,16 +10,34 @@ const User = require('./models/user');
 
 const app = express();
 
-const events = [];
-
 const opt = { useNewUrlParser: true };
 
 app.use(bodyParser.json());
 
+const events = eventIds => {
+    return Event.find({_id: {$in: eventIds}})
+        .then(events => {
+            return events.map(event => {
+                return {
+                    ...event._doc,
+                    _id: event.id,
+                    creator: user.bind(this, event.creator)
+                }
+            })
+        })
+        .catch(err => {
+            throw err;
+        });
+};
+
 const user = userId => {
     return User.findById(userId)
         .then(user => {
-            return { ...user._doc, _id: user.id };
+            return {
+                 ...user._doc,
+                  _id: user.id,
+                  createdEvents: events.bind(this, user._doc.createdEvents)
+            };
         })
         .catch(err => {
             throw err;
@@ -99,7 +117,11 @@ app.use('/graphql', graphqlHttp({
             return event
                 .save()
                 .then(result => {
-                    createdEvent = { ...result._doc, _id: result.id };
+                    createdEvent = {
+                         ...result._doc,
+                          _id: result.id,
+                          creator: user.bind(this, result._doc.creator)
+                    };
                     return User.findById('5c724bb64a88a94db9f8b9ee');
                 })
                 .then(user => {
