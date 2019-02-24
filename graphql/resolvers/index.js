@@ -25,8 +25,6 @@ const singleEvent = async eventId => {
     try {
         const event = await Event.findById(eventId);
 
-        console.log(event);
-
         return {
             ...event._doc,
             _id: event.id,
