@@ -1,4 +1,4 @@
-const processAuthFailure = () => {
+const processAuthFailure = (req, next) => {
     req.isAuth = false;
     return next();
 };
@@ -6,23 +6,23 @@ const processAuthFailure = () => {
 module.exports = (req, res, next) => {
     const authHeader = req.get('Authorization');
     if (!authHeader) {
-        processAuthFailure();
+        return processAuthFailure(req, next);
     }
 
     const token = authHeader.split(' ')[1];
     if (!token || token === '') {
-        processAuthFailure();
+        return processAuthFailure(req, next);
     }
 
     let decodedToken;
     try {
         decodedToken = jwt.verify(token, 'somesupersecretkey :-P');
     } catch(err) {
-        processAuthFailure();
+        return processAuthFailure(req, next);
     }
 
     if (!decodedToken) {
-        processAuthFailure();
+        return processAuthFailure(req, next);
     }
 
     req.isAuth = true;
