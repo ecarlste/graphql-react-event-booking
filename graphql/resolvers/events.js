@@ -1,5 +1,6 @@
 const { transformEvent } = require('./transforms');
 const Event = require('../../models/event');
+const User = require('../../models/user');
 
 const EventsResolvers = {
     events: async () => {
