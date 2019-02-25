@@ -25,7 +25,7 @@ const BookingResolvers = {
         const fetchedEvent = await Event.findOne({ _id: args.eventId });
 
         const booking = new Booking({
-            user: '5c724bb64a88a94db9f8b9ee',
+            user: req.userId,
             event: fetchedEvent
         })
 

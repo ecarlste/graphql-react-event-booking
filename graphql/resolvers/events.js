@@ -24,7 +24,7 @@ const EventsResolvers = {
             description: args.eventInput.description,
             price: +args.eventInput.price,
             date: new Date(args.eventInput.date),
-            creator: '5c724bb64a88a94db9f8b9ee'
+            creator: req.userId
         });
 
         let createdEvent;
@@ -33,7 +33,7 @@ const EventsResolvers = {
 
             createdEvent = transformEvent(result);
 
-            const creator = await User.findById('5c724bb64a88a94db9f8b9ee');
+            const creator = await User.findById(req.userId);
 
             if (!creator) {
                 throw new Error('User not found.');
