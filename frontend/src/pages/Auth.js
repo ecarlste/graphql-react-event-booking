@@ -3,11 +3,21 @@ import React, { Component } from 'react';
 import './Auth.css';
 
 class AuthPage extends Component {
+    state = {
+        isLogin: true
+    };
+
     constructor(props) {
         super(props);
         this.emailEl = React.createRef();
         this.passwordEl = React.createRef();
     }
+
+    switchModeHandler = () => {
+        this.setState(prevState => {
+            return { isLogin: !prevState.isLogin };
+        });
+    };
 
     submitHandler = (event) => {
         event.preventDefault();
@@ -64,7 +74,7 @@ class AuthPage extends Component {
                 </div>
                 <div className="form-actions">
                     <button type="submit">Submit</button>
-                    <button type="button">Sign Up</button>
+                    <button type="button" onClick={this.switchModeHandler}>{this.state.isLogin ? 'Register' : 'Login'}</button>
                 </div>
             </form>
         )
