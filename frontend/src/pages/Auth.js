@@ -36,6 +36,17 @@ class AuthPage extends Component {
             headers: {
                 'Content-Type': 'application/json'
             }
+        })
+        .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Login Failed!')
+            }
+        })
+        .then(resData => {
+            console.log(resData);
+        })
+        .catch(err => {
+            console.log(err);
         });
     }
 
