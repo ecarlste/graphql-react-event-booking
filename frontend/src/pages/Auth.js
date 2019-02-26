@@ -41,6 +41,7 @@ class AuthPage extends Component {
             if (res.status !== 200 && res.status !== 201) {
                 throw new Error('Login Failed!')
             }
+            return res.json();
         })
         .then(resData => {
             console.log(resData);
