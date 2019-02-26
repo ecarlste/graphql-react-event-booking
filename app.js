@@ -26,7 +26,7 @@ mongoose.connect(
         opt
     )
     .then(() => {
-        app.listen(process.env.NOVE_ENV || 3000);
+        app.listen(process.env.NOVE_ENV || 8000);
     })
     .catch(err => {
         console.log(err);
