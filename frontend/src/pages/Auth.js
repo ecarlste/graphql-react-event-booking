@@ -11,7 +11,7 @@ class AuthPage extends Component {
 
     submitHandler = (event) => {
         event.preventDefault();
-        
+
         const email = this.emailEl.current.value;
         const password = this.passwordEl.current.value;
 
@@ -19,7 +19,24 @@ class AuthPage extends Component {
             return;
         }
 
-        console.log(email, password);
+        const requestBody = {
+            query: `
+                mutation {
+                    createUser(userInput: { email: "${email}", password: "${password}" }) {
+                        _id
+                        email
+                    }
+                }
+            `
+        };
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
     }
 
     render() {
