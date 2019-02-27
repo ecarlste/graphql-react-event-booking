@@ -33,6 +33,48 @@ class EventsPage extends Component {
         this.setState({creating: true});
     };
 
+    bookEventHandler() {
+        if (!this.context.token) {
+            this.setState({selectedEvent: null});
+            return;
+        }
+
+        let requestBody = {
+            query: `
+                mutation {
+                    bookEvent(eventId: ${this.state.selectedEvent._id}) {
+                        _id
+                        createdAt
+                        updatedAt
+                    }
+                }
+            `
+        };
+
+        fetch('http://localhost:8000/graphql', {
+            method: 'POST',
+            body: JSON.stringify(requestBody),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + this.context.token
+            }
+        })
+        .then(res => {
+            if (res.status !== 200 && res.status !== 201) {
+                throw new Error('Failed!');
+            }
+            return res.json();
+        })
+        .then(resData => {
+            console.log(resData);
+            this.setState({selectedEvent: null});
+        })
+        .catch(err => {
+            console.log(err);
+            throw err;
+        })
+    }
+
     fetchEvents() {
         this.setState({isLoading: true});
 
@@ -115,15 +157,13 @@ class EventsPage extends Component {
                 }
             `
         }
-
-        const token = this.context.token;
         
         fetch('http://localhost:8000/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'Bearer ' + this.context.token
             }
         })
         .then(res => {
@@ -199,7 +239,7 @@ class EventsPage extends Component {
                 )}
                 {this.state.selectedEvent && (
                     <Modal title={this.state.selectedEvent.title}
-                           confirmText="Book"
+                           confirmText={this.context.token ? 'Book' : 'Confirm'}
                            canCancel
                            canConfirm
                            onCancel={this.modalCancelHandler}
