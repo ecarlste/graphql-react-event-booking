@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 const processAuthFailure = (req, next) => {
     req.isAuth = false;
     return next();
@@ -10,6 +12,7 @@ module.exports = (req, res, next) => {
     }
 
     const token = authHeader.split(' ')[1];
+    console.log(token);
     if (!token || token === '') {
         return processAuthFailure(req, next);
     }
@@ -18,6 +21,7 @@ module.exports = (req, res, next) => {
     try {
         decodedToken = jwt.verify(token, 'somesupersecretkey :-P');
     } catch(err) {
+        console.log(err);
         return processAuthFailure(req, next);
     }
 
