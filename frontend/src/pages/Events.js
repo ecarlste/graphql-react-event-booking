@@ -157,9 +157,6 @@ class EventsPage extends Component {
     };
 
     viewDetailHandler = eventId => {
-        console.log(this.state.selectedEvent);
-        console.log(eventId);
-
         this.setState(prevState => {
             const selectedEvent = prevState.events.find(e => e._id === eventId);
             return {selectedEvent: selectedEvent};
@@ -173,7 +170,13 @@ class EventsPage extends Component {
             <React.Fragment>
                 {showBackdrop && (<Backdrop />)}
                 {this.state.creating && (
-                    <Modal title="Add Event" canCancel canConfirm onCancel={this.modalCancelHandler} onConfirm={this.modalConfirmHandler}>
+                    <Modal title="Add Event"
+                           confirmText="Confirm"
+                           canCancel
+                           canConfirm
+                           onCancel={this.modalCancelHandler}
+                           onConfirm={this.modalConfirmHandler}
+                    >
                         <form>
                             <div className="form-control">
                                 <label htmlFor="title">Title</label>
@@ -196,6 +199,7 @@ class EventsPage extends Component {
                 )}
                 {this.state.selectedEvent && (
                     <Modal title={this.state.selectedEvent.title}
+                           confirmText="Book"
                            canCancel
                            canConfirm
                            onCancel={this.modalCancelHandler}
