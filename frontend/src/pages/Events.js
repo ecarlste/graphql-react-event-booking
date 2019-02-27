@@ -64,7 +64,6 @@ class EventsPage extends Component {
         .then(resData => {
             const events = resData.data.events;
             this.setState({events: events});
-            console.log('finished setting state');
         })
         .catch(err => {
             console.log(err);
@@ -82,8 +81,6 @@ class EventsPage extends Component {
         const date = this.dateElRef.current.value;
         const description = this.descriptionElRef.current.value;
 
-        console.log(`price = ${price}`);
-
         if (
             title.trim().length === 0 ||
             price <= 0 ||
@@ -93,15 +90,12 @@ class EventsPage extends Component {
             return;
         }
 
-        const event = { title, price, date, description };
-        console.log(event);
-
         let requestBody = {
             query: `
                 mutation {
                     createEvent(eventInput: {
                         title: "${title}",
-                        price: "${price}",
+                        price: ${price},
                         date: "${date}",
                         description: "${description}"
                     }) {
@@ -120,7 +114,7 @@ class EventsPage extends Component {
         }
 
         const token = this.context.token;
-
+        
         fetch('http://localhost:8000/graphql', {
             method: 'POST',
             body: JSON.stringify(requestBody),
@@ -144,8 +138,6 @@ class EventsPage extends Component {
     };
 
     render() {
-        console.log(this.state.events);
-
         const eventList = this.state.events.map(event => {
             return (
                 <li key={event._id} className="events__list-item">{event.title}</li>
