@@ -3,7 +3,7 @@ const Booking = require('../../models/booking');
 const Event = require('../../models/event');
 
 const BookingResolvers = {
-    bookings: async (req) => {
+    bookings: async (args, req) => {
         if (!req.isAuth) {
             throw new Error('Unauthenticated!');
         }
