@@ -13,7 +13,7 @@ const EventList = props => {
                 eventId={event._id}
                 title={event.title}
                 userId={props.authUserId}
-                creatorId={props.creator._id}
+                creatorId={event.creator._id}
             />
         );
     });
