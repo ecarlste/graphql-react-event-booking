@@ -2,14 +2,16 @@ import React, { Component } from 'react';
 
 import './Events.css';
 import AuthContext from '../context/auth-context';
-import EventList from '../components/Events/EventList/EventList';
 import Backdrop from '../components/Backdrop/Backdrop';
+import EventList from '../components/Events/EventList/EventList';
 import Modal from '../components/Modal/Modal';
+import Spinner from '../components/Spinner/Spinner';
 
 class EventsPage extends Component {
     state = {
         creating: false,
-        events: []
+        events: [],
+        isLoading: false
     };
 
     static contextType = AuthContext;
@@ -31,6 +33,8 @@ class EventsPage extends Component {
     };
 
     fetchEvents() {
+        this.setState({isLoading: true});
+
         let requestBody = {
             query: `
                 query {
@@ -64,9 +68,10 @@ class EventsPage extends Component {
         })
         .then(resData => {
             const events = resData.data.events;
-            this.setState({events: events});
+            this.setState({events: events, isLoading: false});
         })
         .catch(err => {
+            this.setState({isLoading: false});
             console.log(err);
         })
     }
@@ -186,10 +191,14 @@ class EventsPage extends Component {
                         </button>
                     </div>
                 )}
-                <EventList
-                    events={this.state.events}
-                    authUserId={this.context.userId}
-                />
+                {this.state.isLoading ? (
+                    <Spinner />
+                ) : (
+                    <EventList
+                        events={this.state.events}
+                        authUserId={this.context.userId}
+                    />
+                )}
             </React.Fragment>
         );
     }
