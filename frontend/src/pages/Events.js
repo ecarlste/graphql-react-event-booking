@@ -38,7 +38,7 @@ class EventsPage extends Component {
         this.setState({creating: true});
     };
 
-    bookEventHandler() {
+    bookEventHandler = () => {
         if (!this.context.token) {
             this.setState({selectedEvent: null});
             return;
@@ -47,7 +47,7 @@ class EventsPage extends Component {
         let requestBody = {
             query: `
                 mutation {
-                    bookEvent(eventId: ${this.state.selectedEvent._id}) {
+                    bookEvent(eventId: "${this.state.selectedEvent._id}") {
                         _id
                         createdAt
                         updatedAt
@@ -78,7 +78,7 @@ class EventsPage extends Component {
             console.log(err);
             throw err;
         })
-    }
+    };
 
     fetchEvents() {
         this.setState({isLoading: true});
@@ -126,7 +126,7 @@ class EventsPage extends Component {
                 this.setState({isLoading: false});
             }
         })
-    }
+    };
 
     modalCancelHandler = () => {
         this.setState({creating: false, selectedEvent: null});
