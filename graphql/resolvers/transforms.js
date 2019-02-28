@@ -8,6 +8,10 @@ const eventLoader = new DataLoader(eventIds => {
     return events(eventIds);
 });
 
+const userloader = new DataLoader(userIds => {
+    return User.find({_id: {$in: userIds}});
+});
+
 const transformBooking = booking => {
     return {
         ...booking._doc,
@@ -42,7 +46,7 @@ const events = async eventIds => {
 
 const singleEvent = async eventId => {
     try {
-        return await eventLoader.load(eventId);
+        return await eventLoader.load(eventId.toString());
     } catch (err) {
         throw err;
     }
@@ -50,7 +54,7 @@ const singleEvent = async eventId => {
 
 const user = async userId => {
     try {
-        const user = await User.findById(userId)
+        const user = await userloader.load(userId.toString());
 
         return {
             ...user._doc,
