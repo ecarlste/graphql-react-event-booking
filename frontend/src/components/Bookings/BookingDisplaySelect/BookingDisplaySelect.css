@@ -1,0 +1,22 @@
+.booking-display-select {
+    text-align: center;
+    padding: 0.5rem;
+}
+
+.booking-display-select button {
+    font: inherit;
+    border: none;
+    background: transparent;
+    color: black;
+    padding: 0.25rem 3rem;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+}
+
+.booking-display-select button.active {
+    border-bottom-color: #01d1d1;
+}
+
+.booking-display-select button:focus {
+    outline: none;
+}
