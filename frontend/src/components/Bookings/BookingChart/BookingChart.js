@@ -40,8 +40,6 @@ const bookingChart = props => {
         }]
     };
 
-    console.log(chartData);
-
     return <Bar data={chartData} />
 };
 

@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const DataLoader = require('dataloader');
 
 const { dateToString } = require('../../helpers/date');
@@ -35,10 +36,9 @@ const transformEvent = event => {
 const events = async eventIds => {
     try {
         const events = await Event.find({ _id: { $in: eventIds } });
+        const eventsById = _.keyBy(events, "_id");
 
-        return events.map(event => {
-            return transformEvent(event);
-        });
+        return eventIds.map(eventId => transformEvent(eventsById[eventId]));
     } catch (err) {
         throw err;
     }
